@@ -33,6 +33,9 @@ export const getCourseCategoryAPI = (data: {
     },
   });
 };
+export const getAllCourseCategoryStatusAPI = () => {
+  return api.get(`${ENDPOINTS.COURSE_CATEGORY}/all`);
+};
 export const getCoursePaperAPI = () => {
   return api.get(ENDPOINTS.COURSE_PAPER);
 };
