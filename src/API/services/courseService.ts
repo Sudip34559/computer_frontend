@@ -4,6 +4,18 @@ import api from "../axiosInstance";
 export const addCourseCategoryAPI = (data: { name: string }) => {
   return api.post(ENDPOINTS.COURSE_CATEGORY, data);
 };
+export const updateCourseCategoryAPI = ({
+  name,
+  id,
+}: {
+  name: string;
+  id: string;
+}) => {
+  return api.put(`${ENDPOINTS.COURSE_CATEGORY}/${id}`, { name });
+};
+export const updateCourseCategoryStatusAPI = ({ id }: { id: string }) => {
+  return api.put(`${ENDPOINTS.COURSE_CATEGORY}/${id}/status`);
+};
 export const getCourseCategoryAPI = (data: {
   page: Number | null;
   limit: Number | null;

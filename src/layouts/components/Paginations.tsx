@@ -79,13 +79,13 @@ const Paginations = ({
   const pages = generatePagination();
 
   return (
-    <div className="w-full flex flex-col lg:flex-row">
+    <div className="w-full flex flex-col lg:flex-row ">
       <div className="text-sm text-muted-foreground px-2 lg:text-nowrap">
         Showing {limit * (currentPage - 1) + 1}-
         {limit * (currentPage - 1) + count} of {totalCategories}
       </div>
 
-      <Pagination>
+      <Pagination className="flex justify-end">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
