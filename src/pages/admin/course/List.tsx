@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import CategoryFrom from "@/layouts/admin/components/course/CategoryFrom";
+import CategoryFrom from "@/layouts/admin/components/course/CategoryForm";
 import {
   getCourseCategoryAPI,
   updateCourseCategoryStatusAPI,

@@ -23,8 +23,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Handle unauthorized
-    if (error.response?.status === 401) {
+    if (error.response?.status === 404) {
       console.error("Unauthorized. Logging out...");
+      // Clear auth data and redirect
+      localStorage.removeItem("token");
+      localStorage.removeItem("userData"); // if you store user info
+      window.location.href = "/login"; // redirect to login
     }
     return Promise.reject(error);
   }

@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-function CategoryFrom({
+function CategoryForm({
   data,
   isOpen,
   setIsOpen,
@@ -150,4 +150,4 @@ function CategoryFrom({
   );
 }
 
-export default CategoryFrom;
+export default CategoryForm;

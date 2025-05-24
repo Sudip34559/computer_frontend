@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import CategoryFrom from "@/layouts/admin/components/course/CategoryFrom";
+
 import {
   getCourseCategoryAPI,
   updateCourseCategoryStatusAPI,
@@ -36,6 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SelectInput } from "@/layouts/components/Select";
 import Paginations from "@/layouts/components/Paginations";
 import { toast } from "sonner";
+import CategoryForm from "@/layouts/admin/components/course/CategoryForm";
 
 export type Category = {
   id: string;
@@ -315,7 +316,7 @@ export default function Category() {
           />
         </CardFooter>
 
-        <CategoryFrom
+        <CategoryForm
           data={editData}
           isOpen={isOpen}
           setIsOpen={() => {
