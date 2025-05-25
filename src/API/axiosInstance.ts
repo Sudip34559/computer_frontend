@@ -1,5 +1,6 @@
 import axios from "axios";
 import { baseUrl } from "@/utils/config";
+import { refreshAccessTokenAPI } from "./services/authService";
 
 const api = axios.create({
   baseURL: baseUrl || "http://localhost:8000/api/v1",
@@ -25,10 +26,12 @@ api.interceptors.response.use(
     // Handle unauthorized
     if (error.response?.status === 410) {
       console.error("Unauthorized. Logging out...");
-      // Clear auth data and redirect
-      localStorage.removeItem("token");
-      localStorage.removeItem("userData"); // if you store user info
-      window.location.href = "/login"; // redirect to login
+      refreshAccessTokenAPI().then((res) => {
+        if (res.status === 200) {
+          localStorage.removeItem("token");
+          localStorage.setItem("token", res.data.data.accessToken);
+        }
+      });
     }
     return Promise.reject(error);
   }

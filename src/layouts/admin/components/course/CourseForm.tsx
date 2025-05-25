@@ -16,9 +16,11 @@ import { courseSchema } from "@/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function CourseForm() {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<
     { value: string; label: string }[]
   >([
@@ -78,6 +80,8 @@ function CourseForm() {
     console.log(formData);
     addCourseAPI(formData)
       .then((res: any) => {
+        console.log(res);
+
         if (res.status === 200) {
           handleReset();
           toast.success("Course created successfully");
@@ -104,8 +108,20 @@ function CourseForm() {
 
   return (
     <div className="w-full h-full flex justify-center items-start">
-      <Card className="w-full   p-4 max-w-7xl">
-        <CardHeader className="font-bold">Add Course</CardHeader>
+      <Card className="w-full p-4 max-w-7xl gap-y-3">
+        <CardHeader className="font-bold  h-[36px] ">
+          <div className="w-full h-full  flex justify-between items-center">
+            <h2>Add Course</h2>
+
+            <Button
+              onClick={() => navigate("/admin/courses")}
+              variant="outline"
+              className="text-sm font-semibold w-[70px]"
+            >
+              back
+            </Button>
+          </div>
+        </CardHeader>
         <Separator />
 
         <form
@@ -262,10 +278,11 @@ function CourseForm() {
           <CardFooter className="w-full flex justify-end px-3">
             <Button
               onClick={handleReset}
+              type="reset"
               variant="outline"
               className="text-sm font-semibold"
             >
-              Cancel
+              Refresh
             </Button>
             <Button type="submit" className="ml-2 text-sm font-semibold">
               {"Add"}

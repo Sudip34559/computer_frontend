@@ -16,7 +16,6 @@ function App() {
   const [loding, setLoding] = useState(true);
   useEffect(() => {
     const userData = localStorage.getItem("userData");
-    console.log(userData);
 
     if (userData) {
       const user = JSON.parse(userData);

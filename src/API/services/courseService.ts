@@ -62,6 +62,9 @@ export const getCourseListAPI = (data: {
     },
   });
 };
+export const updateCourseStatusAPI = ({ id }: { id: string }) => {
+  return api.put(`${ENDPOINTS.COURSE}/${id}/status`);
+};
 export const getCoursePaperAPI = () => {
   return api.get(ENDPOINTS.COURSE_PAPER);
 };

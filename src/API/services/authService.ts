@@ -8,3 +8,6 @@ export const loginAPI = (data: { email: string; password: string }) => {
 export const logoutAPI = () => {
   return api.post(ENDPOINTS.LOGOUT);
 };
+export const refreshAccessTokenAPI = () => {
+  return api.post(ENDPOINTS.REFRESH_ACCESS_TOKEN);
+};

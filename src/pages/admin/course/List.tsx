@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, PencilLine } from "lucide-react";
+import { ArrowUpDown, Eye, PencilLine } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,12 +30,11 @@ import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import CategoryFrom from "@/layouts/admin/components/course/CategoryForm";
 import {
   getCourseListAPI,
-  updateCourseCategoryStatusAPI,
+  updateCourseStatusAPI,
 } from "@/API/services/courseService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectInput } from "@/layouts/components/Select";
 import Paginations from "@/layouts/components/Paginations";
-import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import reduceString from "@/helpers/reduceString";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
@@ -44,6 +43,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setCourse } from "@/reducer/course";
 
 export type Course = {
   id: string;
@@ -60,6 +62,7 @@ export type Course = {
 
 export default function List() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState(false);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -99,10 +102,11 @@ export default function List() {
 
   React.useEffect(() => {
     setLoading(true);
-    console.log(sortBy, order);
+    // console.log(sortBy, order);
 
     getCourseListAPI({ page, limit, search, sortBy, order })
       .then((res) => {
+        dispatch(setCourse(res.data.data.courses));
         setData(res.data.data.courses);
         setPagination(res.data.data.pagination);
         setLoading(false);
@@ -114,7 +118,7 @@ export default function List() {
       });
   }, [page, limit, search, sortBy, order, reload]);
   const changeSatus = (id: string) => {
-    updateCourseCategoryStatusAPI({ id })
+    updateCourseStatusAPI({ id })
       .then((res) => {
         if (res.status === 200) {
           toast.success("Status Changed");
@@ -215,6 +219,9 @@ export default function List() {
       cell: ({ row }) => (
         <div className="flex justify-end  text-sm ">
           <Button
+            onClick={() => {
+              changeSatus(row.original._id);
+            }}
             variant={row.original.isActive ? "outline" : "default"}
             className={` h-[20px] w-[65px] text-sm font-semibold   `}
           >
@@ -226,8 +233,16 @@ export default function List() {
     {
       accessorKey: "action",
       header: () => <div className="text-right">Action</div>,
-      cell: () => (
-        <div className="text-right">
+      cell: ({ row }) => (
+        <div className="flex gap-1 justify-end ">
+          <button
+            onClick={() => {
+              navigate(`/admin/courses/${row.original._id}`);
+            }}
+            className="rounded-full p-1 hover:bg-gray-200"
+          >
+            <Eye size={15} />
+          </button>
           <button className="rounded-full p-1 hover:bg-gray-200">
             <PencilLine size={15} />
           </button>
@@ -264,130 +279,132 @@ export default function List() {
 
   // console.log(table.getRowModel().rows[0]);
   return (
-    <Card className="w-full h-full p-4 max-w-7xl">
-      <div className="w-full">
-        <CardHeader className="flex items-center py-4 justify-between">
-          <Input
-            placeholder="Filter name..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="max-w-sm"
-          />
-          <div className="flex gap-1 h-full">
-            <SelectInput
-              width={100}
-              placeholder="Limit"
-              title="Limit"
-              value={limit}
-              onChange={(val) => {
-                setLimit(val);
+    <div className="w-full h-full flex justify-center items-start">
+      <Card className="w-full p-4 max-w-7xl">
+        <div className="w-full">
+          <CardHeader className="flex items-center py-4 justify-between">
+            <Input
+              placeholder="Filter..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setPage(1);
               }}
-              values={[
-                { name: "10", value: 10 },
-                { name: "20", value: 20 },
-                { name: "50", value: 50 },
-                { name: "100", value: 100 },
-              ]}
+              className="max-w-sm"
             />
-            <Button
-              variant="outline"
-              onClick={() => navigate("/admin/courses/add")}
-            >
-              Add Course
-            </Button>
-          </div>
-        </CardHeader>
+            <div className="flex gap-1 h-full">
+              <SelectInput
+                width={100}
+                placeholder="Limit"
+                title="Limit"
+                value={limit}
+                onChange={(val) => {
+                  setLimit(val);
+                  setPage(1);
+                }}
+                values={[
+                  { name: "10", value: 10 },
+                  { name: "20", value: 20 },
+                  { name: "50", value: 50 },
+                  { name: "100", value: 100 },
+                ]}
+              />
+              <Button
+                variant="outline"
+                onClick={() => navigate("/admin/courses/add")}
+              >
+                Add Course
+              </Button>
+            </div>
+          </CardHeader>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Skeleton key={i} className="h-[37px] w-full mb-2" />
-                    ))}
-                  </TableCell>
-                </TableRow>
-              ) : table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Skeleton key={i} className="h-[37px] w-full mb-2" />
+                      ))}
+                    </TableCell>
+                  </TableRow>
+                ) : table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
 
-        <CardFooter className="mt-3 flex justify-between items-center">
-          <Paginations
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            limit={pagination.limit}
-            count={pagination.count}
-            totalCategories={pagination.totalCourses}
-            onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
-            onNext={() =>
-              setPage((prev) => Math.min(prev + 1, pagination.totalPages))
-            }
-            onPageClick={(page) => setPage(page)}
+          <CardFooter className="mt-3 flex justify-between items-center">
+            <Paginations
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              limit={pagination.limit}
+              count={pagination.count}
+              totalCategories={pagination.totalCourses}
+              onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
+              onNext={() =>
+                setPage((prev) => Math.min(prev + 1, pagination.totalPages))
+              }
+              onPageClick={(page) => setPage(page)}
+            />
+          </CardFooter>
+
+          <CategoryFrom
+            data={editData}
+            isOpen={isOpen}
+            setIsOpen={() => {
+              setIsOpen(false);
+              setPage(1);
+              setReload(!reload);
+            }}
+            setEditDta={() => setEditData(null)}
           />
-        </CardFooter>
-
-        <CategoryFrom
-          data={editData}
-          isOpen={isOpen}
-          setIsOpen={() => {
-            setIsOpen(false);
-            setPage(1);
-            setReload(!reload);
-          }}
-          setEditDta={() => setEditData(null)}
-        />
-      </div>
-    </Card>
+        </div>
+      </Card>
+    </div>
   );
 }

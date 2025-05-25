@@ -3,7 +3,7 @@ import type { User } from "@/utils/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 // adjust the path as needed
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   role: string | null;

@@ -122,8 +122,8 @@ function CategoryForm({
               id="category"
               autoComplete="off"
               placeholder="Enter Category"
-              className={errors.name ? "border-red-500 focus:ring-red-500" : ""}
               {...register("name")}
+              className={errors.name ? "border-red-500 focus:ring-red-500" : ""}
             />
             {errors.name && (
               <p className="text-red-500 text-sm ml-1">{errors.name.message}</p>
