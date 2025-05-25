@@ -6,12 +6,16 @@ export const courseCategorySchema = z.object({
 
 export const courseSchema = z.object({
   name: z.string().trim().min(1, "Course name is required"),
-  image: z.string().trim().min(1, "Course image file is required"), // not a URL
+  image: z
+    .instanceof(File, { message: "Please upload a image." })
+    .refine((file) => file.size <= 1 * 1024 * 1024, {
+      message: "Image must be under 1MB",
+    }),
   description: z.string().min(1, "Course description is required"),
-  category: z.string().min(1, "Category is required"), // ObjectId as string
-  price: z.coerce.number({ required_error: "Price is required" }),
-  branchprice: z.coerce.number({ required_error: "Branch price is required" }),
-  duration: z.coerce.number({ required_error: "Duration is required" }), // assumed to be in months/days/etc.
+  category: z.string().min(1, "Category is required"),
+  price: z.coerce.number().min(1, "Price is required"),
+  branchprice: z.coerce.number().min(1, "Branch price is required"),
+  duration: z.coerce.number().min(1, "Duration is required"),
 });
 
 export const coursePaperSchema = z.object({

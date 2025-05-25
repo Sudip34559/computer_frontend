@@ -7,7 +7,7 @@ const ENDPOINTS = {
   CHANGE_PASSWORD: "/users/change-password",
   REFRESH: "/users/refresh",
   COURSE_CATEGORY: "/course/categories",
-  COURSE_LIST: "/course",
+  COURSE: "/courses",
   COURSE_PAPER: "/course/papers",
 };
 

@@ -1,15 +1,22 @@
-import { getAllCourseCategoryStatusAPI } from "@/API/services/courseService";
+import {
+  addCourseAPI,
+  getAllCourseCategoryStatusAPI,
+} from "@/API/services/courseService";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import ImageUploader, {
+  type ImageUploaderRef,
+} from "@/layouts/components/ImageUploader";
 import { SearchSelect } from "@/layouts/components/SearchSelect";
 import { courseSchema } from "@/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 function CourseForm() {
   const [categories, setCategories] = useState<
@@ -20,18 +27,20 @@ function CourseForm() {
       label: "",
     },
   ]);
-  const [value, setValue] = useState("");
+  const [value2, setValue2] = useState("");
+  const imageUploaderRef = useRef<ImageUploaderRef>(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-    getValues,
+    setValue,
+    control,
   } = useForm({
     resolver: zodResolver(courseSchema),
     defaultValues: {
       name: "",
-      image: "",
+      image: undefined,
       description: "",
       category: "",
       price: 0,
@@ -51,16 +60,44 @@ function CourseForm() {
   }, []);
 
   useEffect(() => {
-    if (value) {
-      reset({
-        ...getValues(), // keep previous form data
-        category: value, // override only category
-      });
+    if (value2) {
+      setValue("category", value2);
     }
-  }, [value]);
+  }, [value2]);
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+    console.log(formData);
+    addCourseAPI(formData)
+      .then((res: any) => {
+        if (res.status === 200) {
+          handleReset();
+          toast.success("Course created successfully");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 400) {
+          handleReset();
+          toast.error("Course already exists");
+        } else {
+          toast.error("Somthing went wrong");
+        }
+      });
+  };
+
+  const handleReset = () => {
+    imageUploaderRef.current?.reset();
+    reset();
+    setValue2("");
   };
 
   // console.log(categories);
@@ -80,13 +117,21 @@ function CourseForm() {
               <Label className="text-sm font-semibold">Course Category</Label>
               <SearchSelect
                 width="100%"
-                data={categories as [{ value: string; label: string }]}
+                data={categories}
                 title="Select Category"
                 notFound="Not Found"
-                value={value}
-                setValue={setValue}
+                value={value2}
+                setValue={setValue2}
                 placeholder="Search Category"
+                className={
+                  errors.category ? "border-red-500 focus:ring-red-500" : ""
+                }
               />
+              {errors.category && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.category.message}
+                </p>
+              )}
             </div>
             <div className="gap-2 flex flex-col ">
               <Label htmlFor="name" className="text-sm font-semibold">
@@ -98,7 +143,15 @@ function CourseForm() {
                 {...register("name")}
                 autoComplete="off"
                 placeholder="Course Name"
+                className={
+                  errors.name ? "border-red-500 focus:ring-red-500" : ""
+                }
               />
+              {errors.name && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div className="gap-2 flex flex-col ">
@@ -111,7 +164,15 @@ function CourseForm() {
                 {...register("duration")}
                 autoComplete="off"
                 placeholder="Course Duration"
+                className={
+                  errors.duration ? "border-red-500 focus:ring-red-500" : ""
+                }
               />
+              {errors.duration && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.duration.message}
+                </p>
+              )}
             </div>
 
             <div className="gap-2 flex flex-col ">
@@ -124,7 +185,15 @@ function CourseForm() {
                 {...register("price")}
                 autoComplete="off"
                 placeholder="Course Price"
+                className={
+                  errors.price ? "border-red-500 focus:ring-red-500" : ""
+                }
               />
+              {errors.price && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.price.message}
+                </p>
+              )}
             </div>
             <div className="gap-2 flex flex-col ">
               <Label htmlFor="branchprice" className="text-sm font-semibold">
@@ -136,19 +205,15 @@ function CourseForm() {
                 {...register("branchprice")}
                 autoComplete="off"
                 placeholder="Branch Price"
+                className={
+                  errors.branchprice ? "border-red-500 focus:ring-red-500" : ""
+                }
               />
-            </div>
-            <div className="gap-2 flex flex-col ">
-              <Label htmlFor="image" className="text-sm font-semibold">
-                Course Image
-              </Label>
-              <Input
-                type="file"
-                id="image"
-                {...register("image")}
-                autoComplete="off"
-                placeholder="Course Image"
-              />
+              {errors.branchprice && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.branchprice.message}
+                </p>
+              )}
             </div>
             <div className="gap-2 flex flex-col ">
               <Label htmlFor="description" className="text-sm font-semibold">
@@ -158,13 +223,45 @@ function CourseForm() {
                 {...register("description")}
                 id="description"
                 placeholder="Course Description"
+                className={
+                  errors.description ? "border-red-500 focus:ring-red-500" : ""
+                }
               />
+              {errors.description && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="image" className="text-sm font-semibold">
+                Course Image
+              </Label>
+              <Controller
+                name="image"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    ref={imageUploaderRef}
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.image?.message}
+                    previewUrl="" // optional, for edit
+                    maxSizeMB={1}
+                  />
+                )}
+              />
+              {errors.image && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.image.message}
+                </p>
+              )}
             </div>
           </div>
           <Separator />
           <CardFooter className="w-full flex justify-end px-3">
             <Button
-              onClick={() => reset()}
+              onClick={handleReset}
               variant="outline"
               className="text-sm font-semibold"
             >

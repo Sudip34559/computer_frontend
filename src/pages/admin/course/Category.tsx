@@ -206,127 +206,129 @@ export default function Category() {
 
   // console.log(table.getRowModel().rows[0]);
   return (
-    <Card className="w-full h-full p-4 max-w-7xl">
-      <div className="w-full">
-        <CardHeader className="flex items-center py-4 justify-between">
-          <Input
-            placeholder="Filter name..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="max-w-sm"
-          />
-          <div className="flex gap-1 h-full">
-            <SelectInput
-              width={100}
-              placeholder="Limit"
-              title="Limit"
-              value={limit}
-              onChange={(val) => {
-                setLimit(val);
+    <div className="w-full h-full flex justify-center items-start">
+      <Card className="w-full  p-4 max-w-7xl">
+        <div className="w-full">
+          <CardHeader className="flex items-center py-4 justify-between">
+            <Input
+              placeholder="Filter name..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setPage(1);
               }}
-              values={[
-                { name: "10", value: 10 },
-                { name: "20", value: 20 },
-                { name: "50", value: 50 },
-                { name: "100", value: 100 },
-              ]}
+              className="max-w-sm"
             />
-            <Button variant="outline" onClick={() => setIsOpen(true)}>
-              Add Category
-            </Button>
-          </div>
-        </CardHeader>
+            <div className="flex gap-1 h-full">
+              <SelectInput
+                width={100}
+                placeholder="Limit"
+                title="Limit"
+                value={limit}
+                onChange={(val) => {
+                  setLimit(val);
+                  setPage(1);
+                }}
+                values={[
+                  { name: "10", value: 10 },
+                  { name: "20", value: 20 },
+                  { name: "50", value: 50 },
+                  { name: "100", value: 100 },
+                ]}
+              />
+              <Button variant="outline" onClick={() => setIsOpen(true)}>
+                Add Category
+              </Button>
+            </div>
+          </CardHeader>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Skeleton key={i} className="h-[37px] w-full mb-2" />
-                    ))}
-                  </TableCell>
-                </TableRow>
-              ) : table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Skeleton key={i} className="h-[37px] w-full mb-2" />
+                      ))}
+                    </TableCell>
+                  </TableRow>
+                ) : table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
 
-        <CardFooter className="mt-3 flex justify-between items-center">
-          <Paginations
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            limit={pagination.limit}
-            count={pagination.count}
-            totalCategories={pagination.totalCategories}
-            onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
-            onNext={() =>
-              setPage((prev) => Math.min(prev + 1, pagination.totalPages))
-            }
-            onPageClick={(page) => setPage(page)}
+          <CardFooter className="mt-3 flex justify-between items-center">
+            <Paginations
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              limit={pagination.limit}
+              count={pagination.count}
+              totalCategories={pagination.totalCategories}
+              onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
+              onNext={() =>
+                setPage((prev) => Math.min(prev + 1, pagination.totalPages))
+              }
+              onPageClick={(page) => setPage(page)}
+            />
+          </CardFooter>
+
+          <CategoryForm
+            data={editData}
+            isOpen={isOpen}
+            setIsOpen={() => {
+              setIsOpen(false);
+              setPage(1);
+              setReload(!reload);
+            }}
+            setEditDta={() => setEditData(null)}
           />
-        </CardFooter>
-
-        <CategoryForm
-          data={editData}
-          isOpen={isOpen}
-          setIsOpen={() => {
-            setIsOpen(false);
-            setPage(1);
-            setReload(!reload);
-          }}
-          setEditDta={() => setEditData(null)}
-        />
-      </div>
-    </Card>
+        </div>
+      </Card>
+    </div>
   );
 }

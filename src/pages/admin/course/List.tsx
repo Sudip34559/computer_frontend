@@ -29,7 +29,7 @@ import {
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import CategoryFrom from "@/layouts/admin/components/course/CategoryForm";
 import {
-  getCourseCategoryAPI,
+  getCourseListAPI,
   updateCourseCategoryStatusAPI,
 } from "@/API/services/courseService";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,12 +37,25 @@ import { SelectInput } from "@/layouts/components/Select";
 import Paginations from "@/layouts/components/Paginations";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import reduceString from "@/helpers/reduceString";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-export type Category = {
+export type Course = {
   id: string;
   name: string;
-  isActive: boolean;
+  image: string;
   _id: string;
+  description: string;
+  category: {
+    name: string;
+  };
+  duration: number;
+  isActive: boolean;
 };
 
 export default function List() {
@@ -52,7 +65,7 @@ export default function List() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [data, setData] = React.useState<Category[]>([]);
+  const [data, setData] = React.useState<Course[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -64,13 +77,13 @@ export default function List() {
   const [sortBy, setSortBy] = React.useState("createdAt");
   const [order, setOrder] = React.useState<"asc" | "desc">("asc");
   const [editData, setEditData] = React.useState<null | Pick<
-    Category,
+    Course,
     "id" | "name"
   >>(null);
 
   type Pagination = {
     limit: number;
-    totalCategories: number;
+    totalCourses: number;
     totalPages: number;
     currentPage: number;
     count: number;
@@ -80,7 +93,7 @@ export default function List() {
     limit: 0,
     totalPages: 0,
     currentPage: 0,
-    totalCategories: 0,
+    totalCourses: 0,
     count: 0,
   });
 
@@ -88,9 +101,9 @@ export default function List() {
     setLoading(true);
     console.log(sortBy, order);
 
-    getCourseCategoryAPI({ page, limit, search, sortBy, order })
+    getCourseListAPI({ page, limit, search, sortBy, order })
       .then((res) => {
-        setData(res.data.data.categories);
+        setData(res.data.data.courses);
         setPagination(res.data.data.pagination);
         setLoading(false);
       })
@@ -115,11 +128,23 @@ export default function List() {
       });
   };
 
-  const columns: ColumnDef<Category>[] = [
+  const columns: ColumnDef<Course>[] = [
     {
       accessorKey: "S.No",
       header: "S.No",
       cell: ({ row }) => <div>{row.index + 1}.</div>,
+    },
+    {
+      accessorKey: "image",
+      header: "Image",
+
+      cell: ({ row }) => (
+        <img
+          src={row.original.image}
+          className="w-[35px] h-[35px] rounded-full"
+          alt={row.original.name}
+        />
+      ),
     },
     {
       accessorKey: "name",
@@ -139,14 +164,57 @@ export default function List() {
       cell: ({ row }) => <div className="lowercase">{row.original.name}</div>,
     },
     {
+      accessorKey: "category",
+      header: () => (
+        <Button
+          variant="ghost"
+          onClick={() => {
+            const newOrder = order === "asc" ? "desc" : "asc";
+            setOrder(newOrder);
+            setSortBy("category.name");
+          }}
+        >
+          Category
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="lowercase">{row.original.category.name}</div>
+      ),
+    },
+    {
+      accessorKey: "duration",
+      header: "Duretion",
+      cell: ({ row }) => (
+        <div className="lowercase">{row.original.duration} Months</div>
+      ),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => (
+        <div className="lowercase">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div> {reduceString(row.original.description, 20)}</div>
+              </TooltipTrigger>
+              {row.original.description.length > 20 && (
+                <TooltipContent>
+                  <p>{row.original.description}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      ),
+    },
+    {
       accessorKey: "isActive",
       header: () => <div className="text-right mr-[10px]">Status</div>,
       cell: ({ row }) => (
         <div className="flex justify-end  text-sm ">
           <Button
-            onClick={() => {
-              changeSatus(row.original._id);
-            }}
             variant={row.original.isActive ? "outline" : "default"}
             className={` h-[20px] w-[65px] text-sm font-semibold   `}
           >
@@ -158,20 +226,9 @@ export default function List() {
     {
       accessorKey: "action",
       header: () => <div className="text-right">Action</div>,
-      cell: ({ row }) => (
+      cell: () => (
         <div className="text-right">
-          <button
-            onClick={() => {
-              console.log(row.original);
-
-              setIsOpen(true);
-              setEditData({
-                name: row.original.name,
-                id: row.original._id,
-              });
-            }}
-            className="rounded-full p-1 hover:bg-gray-200"
-          >
+          <button className="rounded-full p-1 hover:bg-gray-200">
             <PencilLine size={15} />
           </button>
         </div>
@@ -311,7 +368,7 @@ export default function List() {
             totalPages={pagination.totalPages}
             limit={pagination.limit}
             count={pagination.count}
-            totalCategories={pagination.totalCategories}
+            totalCategories={pagination.totalCourses}
             onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
             onNext={() =>
               setPage((prev) => Math.min(prev + 1, pagination.totalPages))

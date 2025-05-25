@@ -21,6 +21,7 @@ import {
 
 export function SearchSelect({
   width = "200px",
+  className,
   data,
   value,
   setValue,
@@ -29,17 +30,16 @@ export function SearchSelect({
   placeholder,
 }: {
   width: string;
-  data: [
-    {
-      value: string;
-      label: string;
-    }
-  ];
+  data: {
+    value: string;
+    label: string;
+  }[];
   value: string;
   setValue: (value: string) => void;
   title: string;
   notFound: string;
   placeholder: string;
+  className: string;
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -50,7 +50,7 @@ export function SearchSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn(`w-[${width}]`, "justify-between")}
+          className={cn(`w-[${width}] ${className}`, "justify-between ")}
         >
           {value ? data.find((data) => data.value === value)?.label : title}
           <ChevronsUpDown className="opacity-50" />

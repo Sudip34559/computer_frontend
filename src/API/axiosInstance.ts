@@ -23,7 +23,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Handle unauthorized
-    if (error.response?.status === 404) {
+    if (error.response?.status === 410) {
       console.error("Unauthorized. Logging out...");
       // Clear auth data and redirect
       localStorage.removeItem("token");
