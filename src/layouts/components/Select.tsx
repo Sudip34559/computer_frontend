@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/select";
 
 export function SelectInput({
-  width = 180,
+  width = "100%",
   placeholder = "select",
   title,
   values,
   onChange,
   value,
 }: {
-  width: number;
+  width: string;
   placeholder: string;
   title: string;
   values: {
@@ -28,7 +28,7 @@ export function SelectInput({
 }) {
   return (
     <Select onValueChange={onChange} value={value}>
-      <SelectTrigger className={`w-[${width}px]`}>
+      <SelectTrigger className={`w-[${width}]`}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

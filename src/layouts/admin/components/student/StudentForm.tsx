@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import DatePicker from "@/layouts/components/DatePicker";
 import ImageUploader, {
   type ImageUploaderRef,
 } from "@/layouts/components/ImageUploader";
 import { SearchSelect } from "@/layouts/components/SearchSelect";
+import { SelectInput } from "@/layouts/components/Select";
 import { studentSchema } from "@/schemas/student";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
@@ -24,14 +26,12 @@ function StudentForm() {
       label: "",
     },
   ]);
-  const [value2, setValue2] = useState("");
   const imageUploaderRef = useRef<ImageUploaderRef>(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-    setValue,
     control,
   } = useForm({
     resolver: zodResolver(studentSchema),
@@ -72,12 +72,6 @@ function StudentForm() {
       });
   }, []);
 
-  useEffect(() => {
-    if (value2) {
-      setValue("course", value2);
-    }
-  }, [value2]);
-
   const onSubmit = (data: any) => {
     const formData = new FormData();
 
@@ -112,7 +106,6 @@ function StudentForm() {
   const handleReset = () => {
     imageUploaderRef.current?.reset();
     reset();
-    setValue2("");
   };
 
   // console.log(categories);
@@ -122,15 +115,7 @@ function StudentForm() {
       <Card className="w-full p-4 max-w-7xl gap-y-3">
         <CardHeader className="font-bold  h-[36px] ">
           <div className="w-full h-full  flex justify-between items-center">
-            <h2>Add Course</h2>
-
-            <Button
-              onClick={() => navigate("/admin/courses")}
-              variant="outline"
-              className="text-sm font-semibold w-[70px]"
-            >
-              back
-            </Button>
+            <h2>Add Student</h2>
           </div>
         </CardHeader>
         <Separator />
@@ -141,18 +126,26 @@ function StudentForm() {
         >
           <div className="flex-2rounded-xl gap-y-4 gap-x-7 grid grid-cols-1 lg:grid-cols-2">
             <div className="gap-2 flex flex-col  ">
-              <Label className="text-sm font-semibold">Course Name </Label>
-              <SearchSelect
-                width="100%"
-                data={courses}
-                title="Select Course"
-                notFound="Not Found"
-                value={value2}
-                setValue={setValue2}
-                placeholder="Search Course"
-                className={
-                  errors.course ? "border-red-500 focus:ring-red-500" : ""
-                }
+              <Label htmlFor="course" className="text-sm font-semibold">
+                Course Name{" "}
+              </Label>
+              <Controller
+                name="course"
+                control={control}
+                render={({ field }) => (
+                  <SearchSelect
+                    width="100%"
+                    data={courses}
+                    title="Select Course"
+                    notFound="Not Found"
+                    value={field.value}
+                    setValue={field.onChange}
+                    placeholder="Search Course"
+                    className={
+                      errors.course ? "border-red-500 focus:ring-red-500" : ""
+                    }
+                  />
+                )}
               />
               {errors.course && (
                 <p className="text-red-500 text-sm ml-1">
@@ -162,7 +155,306 @@ function StudentForm() {
             </div>
             <div className="gap-2 flex flex-col ">
               <Label htmlFor="name" className="text-sm font-semibold">
-                Course Name
+                Student Name
+              </Label>
+              <Input
+                type="text"
+                id="name"
+                {...register("name")}
+                autoComplete="off"
+                placeholder="Course Name"
+                className={
+                  errors.name ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="fathersName" className="text-sm font-semibold">
+                Fathers Name
+              </Label>
+              <Input
+                type="text"
+                id="fathersName"
+                {...register("fathersName")}
+                autoComplete="off"
+                placeholder="Course Name"
+                className={
+                  errors.fathersName ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.fathersName && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.fathersName.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="mothersName" className="text-sm font-semibold">
+                Mothers Name
+              </Label>
+              <Input
+                type="text"
+                id="mothersName"
+                {...register("mothersName")}
+                autoComplete="off"
+                placeholder="Course Name"
+                className={
+                  errors.mothersName ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.mothersName && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.mothersName.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="guardiansName" className="text-sm font-semibold">
+                Guardians Name
+              </Label>
+              <Input
+                type="text"
+                id="guardiansName"
+                {...register("guardiansName")}
+                autoComplete="off"
+                placeholder="Course Name"
+                className={
+                  errors.guardiansName
+                    ? "border-red-500 focus:ring-red-500"
+                    : ""
+                }
+              />
+              {errors.guardiansName && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.guardiansName.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="email" className="text-sm font-semibold">
+                Student Email
+              </Label>
+              <Input
+                type="text"
+                id="email"
+                {...register("email")}
+                autoComplete="off"
+                placeholder="Student Email"
+                className={
+                  errors.email ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="phone" className="text-sm font-semibold">
+                Phone Number
+              </Label>
+              <Input
+                type="text"
+                id="phone"
+                {...register("phone")}
+                autoComplete="off"
+                placeholder="Phone Number"
+                className={
+                  errors.phone ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.phone && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="adhaarNo" className="text-sm font-semibold">
+                Adhaar Number
+              </Label>
+              <Input
+                type="text"
+                id="adhaarNo"
+                {...register("adhaarNo")}
+                autoComplete="off"
+                placeholder="Adhaar Number"
+                className={
+                  errors.adhaarNo ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.adhaarNo && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.adhaarNo.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="registrationNo" className="text-sm font-semibold">
+                Registration Number
+              </Label>
+              <Input
+                type="text"
+                id="registrationNo"
+                {...register("registrationNo")}
+                autoComplete="off"
+                placeholder="Registration Number"
+                className={
+                  errors.registrationNo
+                    ? "border-red-500 focus:ring-red-500"
+                    : ""
+                }
+              />
+              {errors.registrationNo && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.registrationNo.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="city" className="text-sm font-semibold">
+                City
+              </Label>
+              <Input
+                type="text"
+                id="city"
+                {...register("city")}
+                autoComplete="off"
+                placeholder="City"
+                className={
+                  errors.city ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.city && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.city.message}
+                </p>
+              )}
+            </div>
+
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="dateOfBirth" className="text-sm font-semibold">
+                Date Of Birth
+              </Label>
+              <Controller
+                name="dateOfBirth"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    date={field.value}
+                    setDate={field.onChange}
+                    placeholder="Select Date of Birth"
+                  />
+                )}
+              />
+              {errors.dateOfBirth && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.dateOfBirth.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label
+                htmlFor="registrationYear"
+                className="text-sm font-semibold"
+              >
+                Registration Year
+              </Label>
+              <Controller
+                name="registrationYear"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    date={field.value}
+                    setDate={field.onChange}
+                    placeholder="Select Registration Year"
+                    type="year"
+                  />
+                )}
+              />
+              {errors.registrationYear && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.registrationYear.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="addmissionDate" className="text-sm font-semibold">
+                Addmission Date
+              </Label>
+              <Controller
+                name="addmissionDate"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    date={field.value}
+                    setDate={field.onChange}
+                    placeholder="Select Addmission Date"
+                  />
+                )}
+              />
+              {errors.addmissionDate && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.addmissionDate.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="maritalStatus" className="text-sm font-semibold">
+                Marital Status
+              </Label>
+              <Controller
+                name="maritalStatus"
+                control={control}
+                render={({ field }) => (
+                  <SelectInput
+                    values={[
+                      { name: "Married", value: "married" },
+                      { name: "UnMarried", value: "unmarried" },
+                    ]}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Select Marital Status"
+                    title="Marital Status"
+                    width={"100%"}
+                  />
+                )}
+              />
+              {errors.maritalStatus && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.maritalStatus.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="name" className="text-sm font-semibold">
+                Student Name
+              </Label>
+              <Input
+                type="text"
+                id="name"
+                {...register("name")}
+                autoComplete="off"
+                placeholder="Course Name"
+                className={
+                  errors.name ? "border-red-500 focus:ring-red-500" : ""
+                }
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="name" className="text-sm font-semibold">
+                Student Name
               </Label>
               <Input
                 type="text"

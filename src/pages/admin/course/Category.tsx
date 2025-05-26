@@ -222,7 +222,7 @@ export default function Category() {
             />
             <div className="flex gap-1 h-full">
               <SelectInput
-                width={100}
+                width={"100px"}
                 placeholder="Limit"
                 title="Limit"
                 value={limit}
