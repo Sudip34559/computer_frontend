@@ -1,7 +1,4 @@
-import {
-  addCourseAPI,
-  getAllCourseCategoryAPI,
-} from "@/API/services/courseService";
+import { addCourseAPI, getAllCourseAPI } from "@/API/services/courseService";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,18 +9,16 @@ import ImageUploader, {
   type ImageUploaderRef,
 } from "@/layouts/components/ImageUploader";
 import { SearchSelect } from "@/layouts/components/SearchSelect";
-import { courseSchema } from "@/schemas/course";
+import { studentSchema } from "@/schemas/student";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-function CourseForm() {
+function StudentForm() {
   const navigate = useNavigate();
-  const [categories, setCategories] = useState<
-    { value: string; label: string }[]
-  >([
+  const [courses, setcourses] = useState<{ value: string; label: string }[]>([
     {
       value: "",
       label: "",
@@ -39,21 +34,37 @@ function CourseForm() {
     setValue,
     control,
   } = useForm({
-    resolver: zodResolver(courseSchema),
+    resolver: zodResolver(studentSchema),
     defaultValues: {
       name: "",
-      image: undefined,
-      description: "",
-      category: "",
-      price: 0,
-      branchprice: 0,
-      duration: 0,
+      dateOfBirth: undefined,
+      fathersName: "",
+      mothersName: "",
+      guardiansName: "",
+      maritalStatus: undefined,
+      course: "",
+      registrationNo: "",
+      registrationYear: undefined,
+      addmissionDate: undefined,
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "",
+      pin: "",
+      adhaarNo: "",
+      photo: undefined,
+      signature: undefined,
+      documents: undefined,
+      isCompleted: false,
+      isActive: true,
+      year: "",
     },
   });
   useEffect(() => {
-    getAllCourseCategoryAPI()
+    getAllCourseAPI()
       .then((res) => {
-        setCategories(res.data.data);
+        setcourses(res.data.data);
         // console.log(res.data.data);
       })
       .catch((err) => {
@@ -63,7 +74,7 @@ function CourseForm() {
 
   useEffect(() => {
     if (value2) {
-      setValue("category", value2);
+      setValue("course", value2);
     }
   }, [value2]);
 
@@ -130,22 +141,22 @@ function CourseForm() {
         >
           <div className="flex-2rounded-xl gap-y-4 gap-x-7 grid grid-cols-1 lg:grid-cols-2">
             <div className="gap-2 flex flex-col  ">
-              <Label className="text-sm font-semibold">Course Category</Label>
+              <Label className="text-sm font-semibold">Course Name </Label>
               <SearchSelect
                 width="100%"
-                data={categories}
-                title="Select Category"
+                data={courses}
+                title="Select Course"
                 notFound="Not Found"
                 value={value2}
                 setValue={setValue2}
-                placeholder="Search Category"
+                placeholder="Search Course"
                 className={
-                  errors.category ? "border-red-500 focus:ring-red-500" : ""
+                  errors.course ? "border-red-500 focus:ring-red-500" : ""
                 }
               />
-              {errors.category && (
+              {errors.course && (
                 <p className="text-red-500 text-sm ml-1">
-                  {errors.category.message}
+                  {errors.course.message}
                 </p>
               )}
             </div>
@@ -169,107 +180,77 @@ function CourseForm() {
                 </p>
               )}
             </div>
-
+          </div>
+          <div className="w-full flex  gap-3">
             <div className="gap-2 flex flex-col ">
-              <Label htmlFor="duration" className="text-sm font-semibold">
-                {`Course Duration (Month)`}
-              </Label>
-              <Input
-                type="number"
-                id="duration"
-                {...register("duration")}
-                autoComplete="off"
-                placeholder="Course Duration"
-                className={
-                  errors.duration ? "border-red-500 focus:ring-red-500" : ""
-                }
-              />
-              {errors.duration && (
-                <p className="text-red-500 text-sm ml-1">
-                  {errors.duration.message}
-                </p>
-              )}
-            </div>
-
-            <div className="gap-2 flex flex-col ">
-              <Label htmlFor="price" className="text-sm font-semibold">
-                Course Price
-              </Label>
-              <Input
-                type="number"
-                id="price"
-                {...register("price")}
-                autoComplete="off"
-                placeholder="Course Price"
-                className={
-                  errors.price ? "border-red-500 focus:ring-red-500" : ""
-                }
-              />
-              {errors.price && (
-                <p className="text-red-500 text-sm ml-1">
-                  {errors.price.message}
-                </p>
-              )}
-            </div>
-            <div className="gap-2 flex flex-col ">
-              <Label htmlFor="branchprice" className="text-sm font-semibold">
-                Branch Price
-              </Label>
-              <Input
-                type="number"
-                id="branchprice"
-                {...register("branchprice")}
-                autoComplete="off"
-                placeholder="Branch Price"
-                className={
-                  errors.branchprice ? "border-red-500 focus:ring-red-500" : ""
-                }
-              />
-              {errors.branchprice && (
-                <p className="text-red-500 text-sm ml-1">
-                  {errors.branchprice.message}
-                </p>
-              )}
-            </div>
-            <div className="gap-2 flex flex-col ">
-              <Label htmlFor="description" className="text-sm font-semibold">
-                Course Description
-              </Label>
-              <Textarea
-                {...register("description")}
-                id="description"
-                placeholder="Course Description"
-                className={
-                  errors.description ? "border-red-500 focus:ring-red-500" : ""
-                }
-              />
-              {errors.description && (
-                <p className="text-red-500 text-sm ml-1">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-            <div className="gap-2 flex flex-col ">
-              <Label htmlFor="image" className="text-sm font-semibold">
-                Course Image
+              <Label htmlFor="photo" className="text-sm font-semibold">
+                Student Photo
               </Label>
               <Controller
-                name="image"
+                name="photo"
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
                     ref={imageUploaderRef}
                     value={field.value}
                     onChange={field.onChange}
-                    error={errors.image?.message}
+                    error={errors.photo?.message}
                     previewUrl="" // optional, for edit
                     maxSizeMB={1}
                   />
                 )}
               />
-              {errors.image && (
+              {errors.photo && (
                 <p className="text-red-500 text-sm ml-1">
-                  {errors.image.message}
+                  {errors.photo.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="signature" className="text-sm font-semibold">
+                Student Signature
+              </Label>
+              <Controller
+                name="signature"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    ref={imageUploaderRef}
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.signature?.message}
+                    previewUrl="" // optional, for edit
+                    maxSizeMB={1}
+                  />
+                )}
+              />
+              {errors.signature && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.signature.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col ">
+              <Label htmlFor="image" className="text-sm font-semibold">
+                Student Document
+              </Label>
+              <Controller
+                name="photo"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    ref={imageUploaderRef}
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.documents?.message}
+                    previewUrl="" // optional, for edit
+                    maxSizeMB={1}
+                  />
+                )}
+              />
+              {errors.documents && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.documents.message}
                 </p>
               )}
             </div>
@@ -294,4 +275,4 @@ function CourseForm() {
   );
 }
 
-export default CourseForm;
+export default StudentForm;

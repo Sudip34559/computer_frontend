@@ -34,7 +34,7 @@ export const getCourseCategoryAPI = (data: {
     },
   });
 };
-export const getAllCourseCategoryStatusAPI = () => {
+export const getAllCourseCategoryAPI = () => {
   return api.get(`${ENDPOINTS.COURSE_CATEGORY}/all`);
 };
 //Course API
@@ -61,6 +61,9 @@ export const getCourseListAPI = (data: {
       order: data.order,
     },
   });
+};
+export const getAllCourseAPI = () => {
+  return api.get(`${ENDPOINTS.COURSE}/all`);
 };
 export const updateCourseStatusAPI = ({ id }: { id: string }) => {
   return api.put(`${ENDPOINTS.COURSE}/${id}/status`);

@@ -10,9 +10,9 @@ export const studentSchema = z.object({
   maritalStatus: z.enum(["Married", "unmarried"], {
     required_error: "Marital status is required",
   }),
-  courseName: z.string().min(1, "Course name is required"),
+  course: z.string().min(1, "Course name is required"),
   registrationNo: z.string().trim().min(1, "Registration number is required"),
-  registrationYear: z.coerce.number({
+  registrationYear: z.coerce.date({
     required_error: "Registration year is required",
   }),
   addmissionDate: z.coerce.date({
@@ -25,9 +25,21 @@ export const studentSchema = z.object({
   state: z.string().trim().min(1, "State is required"),
   pin: z.string().trim().min(1, "PIN code is required"),
   adhaarNo: z.string().trim().min(1, "Adhaar number is required"),
-  photo: z.string().trim().min(1, "Photo URL is required"),
-  signature: z.string().trim().min(1, "Signature URL is required"),
-  documents: z.string().trim().min(1, "Documents field is required"),
+  photo: z
+    .instanceof(File, { message: "Please upload student photo." })
+    .refine((file) => file.size <= 1 * 1024 * 1024, {
+      message: "Image must be under 1MB",
+    }),
+  signature: z
+    .instanceof(File, { message: "Please upload student signature." })
+    .refine((file) => file.size <= 1 * 1024 * 1024, {
+      message: "Image must be under 1MB",
+    }),
+  documents: z
+    .instanceof(File, { message: "Please upload student documents." })
+    .refine((file) => file.size <= 1 * 1024 * 1024, {
+      message: "Image must be under 1MB",
+    }),
   isCompleted: z.boolean().optional().default(false),
   isActive: z.boolean().optional().default(true),
   year: z.string().optional(),

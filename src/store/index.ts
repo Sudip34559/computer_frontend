@@ -16,7 +16,6 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage: storageSession,
-  whitelist: ["auth"], // Only persist the auth slice
 };
 
 // 3. Wrap reducer with persistReducer

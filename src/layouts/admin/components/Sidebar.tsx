@@ -79,11 +79,11 @@ const data = {
       items: [
         {
           title: "Add Students",
-          url: "/admin/students",
+          url: "/admin/students/add",
         },
         {
           title: "Registered Students",
-          url: "#",
+          url: "/admin/students/registured",
         },
         {
           title: "Unregistered Students",

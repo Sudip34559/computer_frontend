@@ -79,7 +79,7 @@ const ImageUploader = forwardRef<ImageUploaderRef, Props>(
 
     return (
       <div
-        className={`w-full max-w-[230px] h-[130px] rounded-lg border-[1px] border-dashed overflow-hidden ${
+        className={`w-full p-2 max-w-[230px] h-[130px] rounded-lg border-[1px] border-dashed overflow-hidden ${
           error ? "border-red-500" : "border-gray-300"
         } relative group bg-gray-50 cursor-pointer`}
         onClick={() => fileInputRef.current?.click()}
