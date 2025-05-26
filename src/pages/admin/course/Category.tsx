@@ -85,10 +85,11 @@ export default function Category() {
 
   React.useEffect(() => {
     setLoading(true);
-    console.log(sortBy, order);
+    // console.log(sortBy, order);
 
     getCourseCategoryAPI({ page, limit, search, sortBy, order })
       .then((res) => {
+        console.log(data);
         setData(res.data.data.categories);
         setPagination(res.data.data.pagination);
         setLoading(false);

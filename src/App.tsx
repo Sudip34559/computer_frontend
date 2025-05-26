@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import type { AppDispatch } from "./store";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { login } from "./reducer/auth";
 import Login from "./pages/auth/Login";
 import LoginRP from "./routeProtectors/LoginRP";
@@ -11,6 +11,7 @@ import LoginRP from "./routeProtectors/LoginRP";
 import { AdminRoutes } from "./routes/AdminRoutes";
 import Layout from "./layouts/admin/Layout";
 import AccessProtect from "./routeProtectors/AccessProtect";
+import PageLoder from "./components/ui/page-loder";
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const [loding, setLoding] = useState(true);
@@ -52,7 +53,9 @@ function App() {
               path="/admin"
               element={
                 <AccessProtect type="admin">
-                  <Layout />
+                  <Suspense fallback={<PageLoder />}>
+                    <Layout />
+                  </Suspense>
                 </AccessProtect>
               }
             >

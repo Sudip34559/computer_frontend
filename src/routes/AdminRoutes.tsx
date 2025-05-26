@@ -1,10 +1,13 @@
-import CourseForm from "@/layouts/admin/components/course/CourseForm";
-import Dashboard from "@/pages/admin/Dashboard";
-import Category from "@/pages/admin/course/Category";
-import CourseView from "@/pages/admin/course/CourseView";
-import List from "@/pages/admin/course/List";
-import Paper from "@/pages/admin/course/Paper";
+import { lazy } from "react";
 import { Route } from "react-router-dom";
+const CourseForm = lazy(
+  () => import("@/layouts/admin/components/course/CourseForm")
+);
+const Dashboard = lazy(() => import("@/pages/admin/Dashboard"));
+const Category = lazy(() => import("@/pages/admin/course/Category"));
+const CourseView = lazy(() => import("@/pages/admin/course/CourseView"));
+const List = lazy(() => import("@/pages/admin/course/List"));
+const Paper = lazy(() => import("@/pages/admin/course/Paper"));
 
 export const AdminRoutes = [
   <Route index element={<Dashboard />} />,
