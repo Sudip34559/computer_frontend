@@ -42,6 +42,7 @@ export function SearchSelect({
   className: string;
 }) {
   const [open, setOpen] = React.useState(false);
+  // console.log(data);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

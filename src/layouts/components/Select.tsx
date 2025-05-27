@@ -15,6 +15,7 @@ export function SelectInput({
   values,
   onChange,
   value,
+  error = "",
 }: {
   width: string;
   placeholder: string;
@@ -25,10 +26,13 @@ export function SelectInput({
   }[];
   onChange: (value: any) => void;
   value: any;
+  error?: string;
 }) {
   return (
     <Select onValueChange={onChange} value={value}>
-      <SelectTrigger className={`w-[${width}]`}>
+      <SelectTrigger
+        className={`w-[${width}] ${error ? "border-red-500" : ""}`}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

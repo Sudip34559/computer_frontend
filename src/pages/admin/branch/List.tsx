@@ -31,32 +31,31 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SelectInput } from "@/layouts/components/Select";
 import Paginations from "@/layouts/components/Paginations";
 import { useNavigate } from "react-router-dom";
-
 // import { toast } from "sonner";
-import { getRegisteredStudentsListAPI } from "@/API/services/studentService";
 
-export type Student = {
+import { getBranchListAPI } from "@/API/services/branchService";
+
+export type Branch = {
   id: string;
-  name: string;
-  photo: string;
+  branchName: string;
   _id: string;
-  fathersName: string;
-  registrationNo: string;
-  course: {
+  phone: string;
+  directorname: string;
+  user: {
+    email: string;
+    avatar: string;
     name: string;
   };
-  email: string;
-  phone: string;
   isActive: boolean;
 };
 
-export default function RegisteredList() {
+export default function BranchList() {
   const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [data, setData] = React.useState<Student[]>([]);
+  const [data, setData] = React.useState<Branch[]>([]);
   const [loading, setLoading] = React.useState(false);
   // const [reload, setReload] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -70,7 +69,7 @@ export default function RegisteredList() {
 
   type Pagination = {
     limit: number;
-    totalStudents: number;
+    totalBranches: number;
     totalPages: number;
     currentPage: number;
     count: number;
@@ -80,7 +79,7 @@ export default function RegisteredList() {
     limit: 0,
     totalPages: 0,
     currentPage: 0,
-    totalStudents: 0,
+    totalBranches: 0,
     count: 0,
   });
 
@@ -88,9 +87,11 @@ export default function RegisteredList() {
     setLoading(true);
     // console.log(sortBy, order);
 
-    getRegisteredStudentsListAPI({ page, limit, search, sortBy, order })
+    getBranchListAPI({ page, limit, search, sortBy, order })
       .then((res) => {
-        setData(res.data.data.students);
+        console.log(res.data.data);
+
+        setData(res.data.data.branches);
         setPagination(res.data.data.pagination);
         setLoading(false);
       })
@@ -100,6 +101,8 @@ export default function RegisteredList() {
         console.error(err);
       });
   }, [page, limit, search, sortBy, order]);
+  console.log("data", data);
+
   // const changeSatus = (id: string) => {
   //   updateCourseStatusAPI({ id })
   //     .then((res) => {
@@ -115,84 +118,73 @@ export default function RegisteredList() {
   //     });
   // };
 
-  const columns: ColumnDef<Student>[] = [
+  const columns: ColumnDef<Branch>[] = [
     {
       accessorKey: "S.No",
       header: "S.No",
       cell: ({ row }) => <div>{row.index + 1}.</div>,
     },
     {
-      accessorKey: "Photo",
-      header: "Photo",
+      accessorKey: "image",
+      header: "Image",
 
       cell: ({ row }) => (
         <img
-          src={row.original.photo}
+          src={row.original.user.avatar}
           className="w-[35px] h-[35px] rounded-full"
-          alt={row.original.name}
+          alt={row.original.user.name}
         />
       ),
     },
     {
-      accessorKey: "name",
+      accessorKey: "branchName",
       header: () => (
         <Button
           variant="ghost"
           onClick={() => {
             const newOrder = order === "asc" ? "desc" : "asc";
             setOrder(newOrder);
-            setSortBy("name");
+            setSortBy("branchName");
           }}
         >
-          Name
+          Branch Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div className="lowercase">{row.original.name}</div>,
+      cell: ({ row }) => (
+        <div className="lowercase">{row.original.branchName}</div>
+      ),
     },
     {
-      accessorKey: "course",
+      accessorKey: "directorname",
       header: () => (
         <Button
           variant="ghost"
           onClick={() => {
             const newOrder = order === "asc" ? "desc" : "asc";
             setOrder(newOrder);
-            setSortBy("course.name");
+            setSortBy("directorname");
           }}
         >
-          Course
+          Director Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="lowercase">{row.original.course.name}</div>
-      ),
+      cell: ({ row }) => <div>{row.original.directorname}</div>,
     },
     {
-      accessorKey: "registrationNo",
-      header: "Registration No.",
+      accessorKey: "email",
+      header: "Email",
       cell: ({ row }) => (
-        <div className="lowercase">{row.original.registrationNo}</div>
-      ),
-    },
-    {
-      accessorKey: "fathersName",
-      header: "Fathers Name",
-      cell: ({ row }) => (
-        <div className="lowercase">{row.original.fathersName} </div>
+        <div className="lowercase">{row.original.user.email}</div>
       ),
     },
     {
       accessorKey: "phone",
       header: "Phone No.",
-      cell: ({ row }) => <div className="lowercase">{row.original.phone}</div>,
+      cell: ({ row }) => <div className="lowercase">{row.original.phone} </div>,
     },
-    {
-      accessorKey: "email",
-      header: "Email",
-      cell: ({ row }) => <div className="lowercase">{row.original.email}</div>,
-    },
+
     {
       accessorKey: "isActive",
       header: () => <div className="text-right mr-[10px]">Status</div>,
@@ -283,9 +275,9 @@ export default function RegisteredList() {
               />
               <Button
                 variant="outline"
-                onClick={() => navigate("/admin/courses/add")}
+                onClick={() => navigate("/admin/branches/add")}
               >
-                Add Course
+                Add Branch
               </Button>
             </div>
           </CardHeader>
@@ -356,7 +348,7 @@ export default function RegisteredList() {
               totalPages={pagination.totalPages}
               limit={pagination.limit}
               count={pagination.count}
-              totalCategories={pagination.totalStudents}
+              totalCategories={pagination.totalBranches}
               onPrevious={() => setPage((prev) => Math.max(prev - 1, 1))}
               onNext={() =>
                 setPage((prev) => Math.min(prev + 1, pagination.totalPages))

@@ -10,6 +10,8 @@ const ENDPOINTS = {
   COURSE_CATEGORY: "/course/categories",
   COURSE: "/courses",
   COURSE_PAPER: "/course/papers",
+  BRANCH: "/branches",
+  STUDENT: "/students",
 };
 
 export default ENDPOINTS;

@@ -25,9 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import CategoryFrom from "@/layouts/admin/components/course/CategoryForm";
 import {
   getCourseListAPI,
   updateCourseStatusAPI,
@@ -63,7 +61,6 @@ export type Course = {
 export default function List() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = React.useState(false);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -79,10 +76,6 @@ export default function List() {
   const [rowSelection, setRowSelection] = React.useState({});
   const [sortBy, setSortBy] = React.useState("createdAt");
   const [order, setOrder] = React.useState<"asc" | "desc">("asc");
-  const [editData, setEditData] = React.useState<null | Pick<
-    Course,
-    "id" | "name"
-  >>(null);
 
   type Pagination = {
     limit: number;
@@ -392,17 +385,6 @@ export default function List() {
               onPageClick={(page) => setPage(page)}
             />
           </CardFooter>
-
-          <CategoryFrom
-            data={editData}
-            isOpen={isOpen}
-            setIsOpen={() => {
-              setIsOpen(false);
-              setPage(1);
-              setReload(!reload);
-            }}
-            setEditDta={() => setEditData(null)}
-          />
         </div>
       </Card>
     </div>

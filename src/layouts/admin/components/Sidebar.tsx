@@ -124,12 +124,12 @@ const data = {
       icon: Network,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Add Branch",
+          url: "/admin/branches/add",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Branch List",
+          url: "/admin/branches",
         },
         {
           title: "Quantum",

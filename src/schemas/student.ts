@@ -7,10 +7,11 @@ export const studentSchema = z.object({
   fathersName: z.string().trim().min(1, "Father's name is required"),
   mothersName: z.string().trim().optional(),
   guardiansName: z.string().trim().optional(),
-  maritalStatus: z.enum(["Married", "unmarried"], {
+  maritalStatus: z.enum(["married", "unmarried"], {
     required_error: "Marital status is required",
   }),
   course: z.string().min(1, "Course name is required"),
+  branch: z.string().trim().optional(),
   registrationNo: z.string().trim().min(1, "Registration number is required"),
   registrationYear: z.coerce.date({
     required_error: "Registration year is required",
@@ -42,5 +43,4 @@ export const studentSchema = z.object({
     }),
   isCompleted: z.boolean().optional().default(false),
   isActive: z.boolean().optional().default(true),
-  year: z.string().optional(),
 });

@@ -1,4 +1,6 @@
-import { addCourseAPI, getAllCourseAPI } from "@/API/services/courseService";
+import { getAllBranchAPI } from "@/API/services/branchService";
+import { getAllCourseAPI } from "@/API/services/courseService";
+import { addStudentAPI } from "@/API/services/studentService";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,27 +8,29 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "@/layouts/components/DatePicker";
-import ImageUploader, {
-  type ImageUploaderRef,
-} from "@/layouts/components/ImageUploader";
+import ImageUploader from "@/layouts/components/ImageUploader";
 import { SearchSelect } from "@/layouts/components/SearchSelect";
 import { SelectInput } from "@/layouts/components/Select";
 import { studentSchema } from "@/schemas/student";
+import { indianStates } from "@/utils/data";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function StudentForm() {
-  const navigate = useNavigate();
   const [courses, setcourses] = useState<{ value: string; label: string }[]>([
     {
       value: "",
       label: "",
     },
   ]);
-  const imageUploaderRef = useRef<ImageUploaderRef>(null);
+  const [branches, setBranches] = useState<{ value: string; label: string }[]>([
+    {
+      value: "",
+      label: "",
+    },
+  ]);
   const {
     register,
     handleSubmit,
@@ -43,6 +47,7 @@ function StudentForm() {
       guardiansName: "",
       maritalStatus: undefined,
       course: "",
+      branch: "",
       registrationNo: "",
       registrationYear: undefined,
       addmissionDate: undefined,
@@ -58,7 +63,6 @@ function StudentForm() {
       documents: undefined,
       isCompleted: false,
       isActive: true,
-      year: "",
     },
   });
   useEffect(() => {
@@ -66,6 +70,14 @@ function StudentForm() {
       .then((res) => {
         setcourses(res.data.data);
         // console.log(res.data.data);
+      })
+      .catch((err) => {
+        console.error("API error:", err);
+      });
+    getAllBranchAPI()
+      .then((res) => {
+        setBranches(res.data.data);
+        console.log(res.data.data);
       })
       .catch((err) => {
         console.error("API error:", err);
@@ -82,21 +94,21 @@ function StudentForm() {
         formData.append(key, value.toString());
       }
     });
-    console.log(formData);
-    addCourseAPI(formData)
-      .then((res: any) => {
+    console.log(data);
+    addStudentAPI(formData)
+      .then((res) => {
         console.log(res);
 
         if (res.status === 200) {
           handleReset();
-          toast.success("Course created successfully");
+          toast.success("Student created successfully");
         }
       })
       .catch((err) => {
         console.log(err);
         if (err.response.status === 400) {
-          handleReset();
-          toast.error("Course already exists");
+          // handleReset();
+          toast.error("Student already exists");
         } else {
           toast.error("Somthing went wrong");
         }
@@ -104,11 +116,8 @@ function StudentForm() {
   };
 
   const handleReset = () => {
-    imageUploaderRef.current?.reset();
     reset();
   };
-
-  // console.log(categories);
 
   return (
     <div className="w-full h-full flex justify-center items-start">
@@ -150,6 +159,62 @@ function StudentForm() {
               {errors.course && (
                 <p className="text-red-500 text-sm ml-1">
                   {errors.course.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col  ">
+              <Label htmlFor="branch" className="text-sm font-semibold">
+                Branch Name{" "}
+              </Label>
+              <Controller
+                name="branch"
+                control={control}
+                render={({ field }) => (
+                  <SearchSelect
+                    width="100%"
+                    data={[{ value: "", label: "No Branch" }, ...branches]}
+                    title="Select Course"
+                    notFound="Not Found"
+                    value={field.value || ""}
+                    setValue={field.onChange}
+                    placeholder="Search Branch"
+                    className={
+                      errors.branch ? "border-red-500 focus:ring-red-500" : ""
+                    }
+                  />
+                )}
+              />
+              {errors.branch && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.branch.message}
+                </p>
+              )}
+            </div>
+            <div className="gap-2 flex flex-col  ">
+              <Label htmlFor="state" className="text-sm font-semibold">
+                State{" "}
+              </Label>
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <SearchSelect
+                    width="100%"
+                    data={indianStates}
+                    title="Select State"
+                    notFound="Not Found"
+                    value={field.value}
+                    setValue={field.onChange}
+                    placeholder="Search State"
+                    className={
+                      errors.state ? "border-red-500 focus:ring-red-500" : ""
+                    }
+                  />
+                )}
+              />
+              {errors.state && (
+                <p className="text-red-500 text-sm ml-1">
+                  {errors.state.message}
                 </p>
               )}
             </div>
@@ -337,7 +402,6 @@ function StudentForm() {
                 </p>
               )}
             </div>
-
             <div className="gap-2 flex flex-col ">
               <Label htmlFor="dateOfBirth" className="text-sm font-semibold">
                 Date Of Birth
@@ -350,6 +414,7 @@ function StudentForm() {
                     date={field.value}
                     setDate={field.onChange}
                     placeholder="Select Date of Birth"
+                    error={errors.dateOfBirth?.message}
                   />
                 )}
               />
@@ -375,6 +440,7 @@ function StudentForm() {
                     setDate={field.onChange}
                     placeholder="Select Registration Year"
                     type="year"
+                    error={errors.registrationYear?.message}
                   />
                 )}
               />
@@ -396,6 +462,7 @@ function StudentForm() {
                     date={field.value}
                     setDate={field.onChange}
                     placeholder="Select Addmission Date"
+                    error={errors.addmissionDate?.message}
                   />
                 )}
               />
@@ -423,6 +490,7 @@ function StudentForm() {
                     placeholder="Select Marital Status"
                     title="Marital Status"
                     width={"100%"}
+                    error={errors.maritalStatus?.message}
                   />
                 )}
               />
@@ -433,42 +501,41 @@ function StudentForm() {
               )}
             </div>
             <div className="gap-2 flex flex-col ">
-              <Label htmlFor="name" className="text-sm font-semibold">
-                Student Name
+              <Label htmlFor="address" className="text-sm font-semibold">
+                Address
               </Label>
-              <Input
-                type="text"
-                id="name"
-                {...register("name")}
+              <Textarea
+                id="address"
+                {...register("address")}
                 autoComplete="off"
-                placeholder="Course Name"
+                placeholder="Address"
                 className={
-                  errors.name ? "border-red-500 focus:ring-red-500" : ""
+                  errors.address ? "border-red-500 focus:ring-red-500" : ""
                 }
               />
-              {errors.name && (
+              {errors.address && (
                 <p className="text-red-500 text-sm ml-1">
-                  {errors.name.message}
+                  {errors.address.message}
                 </p>
               )}
             </div>
             <div className="gap-2 flex flex-col ">
-              <Label htmlFor="name" className="text-sm font-semibold">
-                Student Name
+              <Label htmlFor="pin" className="text-sm font-semibold">
+                Pin Code
               </Label>
               <Input
                 type="text"
-                id="name"
-                {...register("name")}
+                id="pin"
+                {...register("pin")}
                 autoComplete="off"
-                placeholder="Course Name"
+                placeholder="Pin Code"
                 className={
-                  errors.name ? "border-red-500 focus:ring-red-500" : ""
+                  errors.pin ? "border-red-500 focus:ring-red-500" : ""
                 }
               />
-              {errors.name && (
+              {errors.pin && (
                 <p className="text-red-500 text-sm ml-1">
-                  {errors.name.message}
+                  {errors.pin.message}
                 </p>
               )}
             </div>
@@ -483,7 +550,6 @@ function StudentForm() {
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
-                    ref={imageUploaderRef}
                     value={field.value}
                     onChange={field.onChange}
                     error={errors.photo?.message}
@@ -507,7 +573,6 @@ function StudentForm() {
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
-                    ref={imageUploaderRef}
                     value={field.value}
                     onChange={field.onChange}
                     error={errors.signature?.message}
@@ -523,15 +588,14 @@ function StudentForm() {
               )}
             </div>
             <div className="gap-2 flex flex-col ">
-              <Label htmlFor="image" className="text-sm font-semibold">
+              <Label htmlFor="documents" className="text-sm font-semibold">
                 Student Document
               </Label>
               <Controller
-                name="photo"
+                name="documents"
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
-                    ref={imageUploaderRef}
                     value={field.value}
                     onChange={field.onChange}
                     error={errors.documents?.message}

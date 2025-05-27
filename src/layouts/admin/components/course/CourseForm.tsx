@@ -8,9 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import ImageUploader, {
-  type ImageUploaderRef,
-} from "@/layouts/components/ImageUploader";
+import ImageUploader from "@/layouts/components/ImageUploader";
 import { SearchSelect } from "@/layouts/components/SearchSelect";
 import { courseSchema } from "@/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +28,7 @@ function CourseForm() {
     },
   ]);
   const [value2, setValue2] = useState("");
-  const imageUploaderRef = useRef<ImageUploaderRef>(null);
+
   const {
     register,
     handleSubmit,
@@ -99,7 +97,6 @@ function CourseForm() {
   };
 
   const handleReset = () => {
-    imageUploaderRef.current?.reset();
     reset();
     setValue2("");
   };
@@ -258,7 +255,6 @@ function CourseForm() {
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
-                    ref={imageUploaderRef}
                     value={field.value}
                     onChange={field.onChange}
                     error={errors.image?.message}
