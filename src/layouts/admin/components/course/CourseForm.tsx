@@ -12,7 +12,7 @@ import ImageUploader from "@/layouts/components/ImageUploader";
 import { SearchSelect } from "@/layouts/components/SearchSelect";
 import { courseSchema } from "@/schemas/course";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

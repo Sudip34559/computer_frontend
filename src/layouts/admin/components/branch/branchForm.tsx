@@ -10,7 +10,6 @@ import { SearchSelect } from "@/layouts/components/SearchSelect";
 import { branchSchema } from "@/schemas/branch";
 import { indianStates } from "@/utils/data";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
