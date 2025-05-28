@@ -83,11 +83,11 @@ const data = {
         },
         {
           title: "Registered Students",
-          url: "/admin/students/registured",
+          url: "/admin/students/registered",
         },
         {
           title: "Unregistered Students",
-          url: "#",
+          url: "/admin/students/unregistered",
         },
         {
           title: "Pass Out Students",

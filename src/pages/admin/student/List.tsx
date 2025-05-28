@@ -30,10 +30,10 @@ import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectInput } from "@/layouts/components/Select";
 import Paginations from "@/layouts/components/Paginations";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // import { toast } from "sonner";
-import { getRegisteredStudentsListAPI } from "@/API/services/studentService";
+import { getStudentsListAPI } from "@/API/services/studentService";
 
 export type Student = {
   id: string;
@@ -50,7 +50,8 @@ export type Student = {
   isActive: boolean;
 };
 
-export default function RegisteredList() {
+export default function List() {
+  const { status = "registered" } = useParams();
   const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -87,8 +88,8 @@ export default function RegisteredList() {
   React.useEffect(() => {
     setLoading(true);
     // console.log(sortBy, order);
-
-    getRegisteredStudentsListAPI({ page, limit, search, sortBy, order })
+    // const status = "registered";
+    getStudentsListAPI({ page, limit, search, sortBy, order, status })
       .then((res) => {
         setData(res.data.data.students);
         setPagination(res.data.data.pagination);
@@ -99,7 +100,7 @@ export default function RegisteredList() {
         setLoading(false);
         console.error(err);
       });
-  }, [page, limit, search, sortBy, order]);
+  }, [page, limit, search, sortBy, order, status]);
   // const changeSatus = (id: string) => {
   //   updateCourseStatusAPI({ id })
   //     .then((res) => {

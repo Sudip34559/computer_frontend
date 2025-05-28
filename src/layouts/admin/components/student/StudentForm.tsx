@@ -3,6 +3,7 @@ import { getAllCourseAPI } from "@/API/services/courseService";
 import { addStudentAPI } from "@/API/services/studentService";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -63,6 +64,7 @@ function StudentForm() {
       documents: undefined,
       isCompleted: false,
       isActive: true,
+      isRegistered: true,
     },
   });
   useEffect(() => {
@@ -538,6 +540,65 @@ function StudentForm() {
                   {errors.pin.message}
                 </p>
               )}
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="flex items-center space-x-2">
+              <Controller
+                control={control}
+                name="isActive"
+                render={({ field }) => (
+                  <Checkbox
+                    id="isActive"
+                    checked={field.value}
+                    onCheckedChange={field.onChange} // or onChange, depending on your library
+                  />
+                )}
+              />
+              <label
+                htmlFor="isActive"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Active Student
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Controller
+                control={control}
+                name="isRegistered"
+                render={({ field }) => (
+                  <Checkbox
+                    id="isRegistered"
+                    checked={field.value}
+                    onCheckedChange={field.onChange} // or onChange, depending on your library
+                  />
+                )}
+              />
+              <label
+                htmlFor="isRegistered"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Registered Student
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Controller
+                control={control}
+                name="isCompleted"
+                render={({ field }) => (
+                  <Checkbox
+                    id="isCompleted"
+                    checked={field.value}
+                    onCheckedChange={field.onChange} // or onChange, depending on your library
+                  />
+                )}
+              />
+              <label
+                htmlFor="isCompleted"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Completed Course
+              </label>
             </div>
           </div>
           <div className="w-full flex  gap-3">

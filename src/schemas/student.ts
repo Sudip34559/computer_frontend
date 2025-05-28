@@ -43,4 +43,5 @@ export const studentSchema = z.object({
     }),
   isCompleted: z.boolean().optional().default(false),
   isActive: z.boolean().optional().default(true),
+  isRegistered: z.boolean().optional().default(true),
 });

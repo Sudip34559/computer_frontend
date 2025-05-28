@@ -12,20 +12,24 @@ export const addStudentAPI = async (data: any) => {
   });
 };
 
-export const getRegisteredStudentsListAPI = async (data: {
+export const getStudentsListAPI = async (data: {
   page: Number | null;
   limit: Number | null;
   search: String | null;
   sortBy: string | null;
   order: string | null;
+  status: string;
 }) => {
-  return await api.get(`${ENDPOINTS.STUDENT}/registered`, {
+  // console.log(data.status);
+
+  return await api.get(ENDPOINTS.STUDENT, {
     params: {
       page: data.page,
       limit: data.limit,
       search: data.search,
       sortBy: data.sortBy,
       order: data.order,
+      status: data.status,
     },
   });
 };

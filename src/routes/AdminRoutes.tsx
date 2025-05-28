@@ -7,7 +7,7 @@ const CourseForm = lazy(
 const Dashboard = lazy(() => import("@/pages/admin/Dashboard"));
 const Category = lazy(() => import("@/pages/admin/course/Category"));
 const CourseView = lazy(() => import("@/pages/admin/course/CourseView"));
-const List = lazy(() => import("@/pages/admin/course/List"));
+const CourseList = lazy(() => import("@/pages/admin/course/List"));
 const Paper = lazy(() => import("@/pages/admin/course/Paper"));
 //Branch
 const BranchForm = lazy(
@@ -15,7 +15,7 @@ const BranchForm = lazy(
 );
 const BranchList = lazy(() => import("@/pages/admin/branch/List"));
 //student
-const RegisteredList = lazy(() => import("@/pages/admin/student/RegistedList"));
+const StudentList = lazy(() => import("@/pages/admin/student/List"));
 const StudentForm = lazy(
   () => import("@/layouts/admin/components/student/StudentForm")
 );
@@ -23,7 +23,7 @@ const StudentForm = lazy(
 export const AdminRoutes = [
   //course
   <Route index element={<Dashboard />} />,
-  <Route path="courses" element={<List />} />,
+  <Route path="courses" element={<CourseList />} />,
   <Route path="courses/:id" element={<CourseView />} />,
   <Route path="courses/add" element={<CourseForm />} />,
   <Route path="course/categories" element={<Category />} />,
@@ -32,6 +32,6 @@ export const AdminRoutes = [
   <Route path="branches/add" element={<BranchForm />} />,
   <Route path="branches" element={<BranchList />} />,
   //student
-  <Route path="students/registured" element={<RegisteredList />} />,
+  <Route path="students/:status" element={<StudentList />} />,
   <Route path="students/add" element={<StudentForm />} />,
 ];
